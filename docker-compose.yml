@@ -1,0 +1,62 @@
+version: '3.9'
+
+services:
+  postgres-db:
+    image: postgres:15
+    container_name: postgres-db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: banco
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-db:/docker-entrypoint-initdb.d
+
+    networks:
+      - banco-net
+
+  cliente-persona-service:
+    image: cliente-persona-service
+    build: ./cliente-persona-service
+    container_name: cliente-persona-service
+    ports:
+      - "8082:8082"
+    depends_on:
+      - postgres-db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-db:5432/banco
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+      SPRING_JPA_HIBERNATE_DDL_AUTO: none
+      SPRING_JPA_PROPERTIES_HIBERNATE_DEFAULT_SCHEMA: dbo
+      SERVER_PORT: 8082
+    networks:
+      - banco-net
+      
+  cuenta-movimientos-service:
+    image: cuenta-movimientos-service
+    build: ./cuenta-movimientos-service
+    container_name: cuenta-movimientos-service
+    ports:
+      - "8083:8083"
+    depends_on:
+      - postgres-db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-db:5432/banco
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+      SPRING_JPA_HIBERNATE_DDL_AUTO: none
+      SPRING_JPA_PROPERTIES_HIBERNATE_DEFAULT_SCHEMA: dbo
+      SERVER_PORT: 8083
+    networks:
+      - banco-net
+
+networks:
+  banco-net:
+    driver: bridge
+
+volumes:
+  postgres_data:
