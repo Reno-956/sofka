@@ -24,8 +24,7 @@ El objetivo es cubrir los requerimientos típicos de un sistema bancario:
 - **Spring Web**
 - **Spring Data JPA**
 - **Hibernate**
-- **H2 (Tests)**
-- **SQL Server (Producción)**
+- **PostgreSQL**
 - **MapStruct**
 - **Lombok**
 - **Maven**
@@ -47,6 +46,9 @@ El objetivo es cubrir los requerimientos típicos de un sistema bancario:
 - Validación automática de saldos  
 - Alerta: **"Saldo no disponible"**  
 - Actualización automática del saldo en la cuenta
+
+---
+
 
 ## Empezar 
 
